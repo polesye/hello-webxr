@@ -1,8 +1,9 @@
 import * as THREE from 'three';
+
 import { BasisTextureLoader } from 'three/examples/jsm/loaders/BasisTextureLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 //const BASIS_LIB_PATH = 'src/vendor/';
 const BASIS_LIB_PATH = 'src/vendor/';

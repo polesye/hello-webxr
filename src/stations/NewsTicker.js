@@ -1,10 +1,11 @@
 //import {Text} from '../lib/text.mjs';
 import * as THREE from 'three';
-import { Text, Rotation, Position, ParentObject3D } from '../components/index.js';
+
+import { ParentObject3D, Position, Rotation, Text } from '../components/index.js';
 
 var newsTicker = {
   url: 'assets/tweets.json',
-  hashtag: '#helloWebXR',
+  hashtag: '#webXR',
   hashtagText: null,
   authorText: null,
   messageText: null,

@@ -1,39 +1,29 @@
 import * as THREE from 'three';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
-
-import {VRButton} from './lib/VRButton.js';
-import {slideshow} from './lib/slideshow.js';
-import {loadAssets} from './lib/assetManager.js';
-
-// ECSY
-import { World } from 'ecsy';
-import { SDFTextSystem } from './systems/SDFTextSystem.js';
-import { DebugHelperSystem } from './systems/DebugHelperSystem.js';
-import { AreaCheckerSystem } from './systems/AreaCheckerSystem.js';
-import { ControllersSystem } from './systems/ControllersSystem.js';
-import HierarchySystem from './systems/HierarchySystem.js';
-import TransformSystem from './systems/TransformSystem.js';
-import BillboardSystem from './systems/BillboardSystem.js';
-
-import SystemsGroup from './systems/SystemsGroup.js';
-
-import assets from './assets.js';
-
-import { Text, Object3D, AreaChecker } from './components/index.js';
-
-import RayControl from './lib/RayControl.js';
-import Teleport from './lib/Teleport.js';
-
 import * as roomHall from './rooms/Hall.js';
 import * as roomPanorama from './rooms/Panorama.js';
-import * as roomPanoramaStereo from './rooms/PanoramaStereo.js';
-import * as roomPhotogrammetryObject from './rooms/PhotogrammetryObject.js';
-import * as roomVertigo from './rooms/Vertigo.js';
-import * as roomSound from './rooms/Sound.js';
 
-import {shaders} from './lib/shaders.js';
+import { AreaChecker, Object3D, Text } from './components/index.js';
 
+import { AreaCheckerSystem } from './systems/AreaCheckerSystem.js';
+import BillboardSystem from './systems/BillboardSystem.js';
+import { ControllersSystem } from './systems/ControllersSystem.js';
+import { DebugHelperSystem } from './systems/DebugHelperSystem.js';
+import HierarchySystem from './systems/HierarchySystem.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import RayControl from './lib/RayControl.js';
+import { SDFTextSystem } from './systems/SDFTextSystem.js';
+import SystemsGroup from './systems/SystemsGroup.js';
+import Teleport from './lib/Teleport.js';
+import TransformSystem from './systems/TransformSystem.js';
+import { VRButton } from './lib/VRButton.js';
 import WebXRPolyfill from 'webxr-polyfill';
+// ECSY
+import { World } from 'ecsy';
+import assets from './assets.js';
+import { loadAssets } from './lib/assetManager.js';
+import { shaders } from './lib/shaders.js';
+import { slideshow } from './lib/slideshow.js';
+
 const polyfill = new WebXRPolyfill();
 
 var clock = new THREE.Clock();
@@ -45,10 +35,6 @@ var listener, ambientMusic;
 
 var rooms = [
   roomHall,
-  roomSound,
-  roomPhotogrammetryObject,
-  roomVertigo,
-  roomPanoramaStereo,
   roomPanorama,
   roomPanorama,
   roomPanorama,
@@ -58,10 +44,6 @@ var rooms = [
 
 const roomNames = [
   'hall',
-  'sound',
-  'photogrammetry',
-  'vertigo',
-  'panoramastereo',
   'panorama1',
   'panorama2',
   'panorama3',
@@ -71,10 +53,6 @@ const roomNames = [
 
 const musicThemes = [
   false,
-  false,
-  'chopin_snd',
-  'wind_snd',
-  false,
   'birds_snd',
   'birds_snd',
   'forest_snd',
@@ -82,10 +60,20 @@ const musicThemes = [
   'birds_snd',
 ];
 
+
+const videoThemes = [
+  false,
+  'assets/mp4/BuddhaPark.mp4',
+  'assets/mp4/Bastei.mp4',
+  'assets/mp4/Germany.mp4',
+  'assets/mp4/pano.mp4',
+  'assets/mp4/SpecialMoments.mp4',
+];
+
 const urlObject = new URL(window.location);
 const roomName = urlObject.searchParams.get('room');
 context.room = roomNames.indexOf(roomName) !== -1 ? roomNames.indexOf(roomName) : 0;
-// console.log(`Current room "${roomNames[context.room]}", ${context.room}`);
+console.log(`Current room "${roomNames[context.room]}", ${context.room}`);
 const debug = urlObject.searchParams.has('debug');
 const handedness = urlObject.searchParams.has('handedness') ? urlObject.searchParams.get('handedness') : "right";
 
@@ -128,9 +116,18 @@ function gotoRoom(room) {
   context.room = room;
 
   playMusic(room);
-
+  playVideo(room);
   rooms[context.room].enter(context);
 }
+
+function playVideo(room) {
+  const video = document.getElementById( 'video' )
+  const videoT = videoThemes[room];
+  if (!videoT) { return; }
+  video.src = videoT;
+  video.play();
+}
+
 
 function playMusic(room) {
   if (ambientMusic.source) ambientMusic.stop();
@@ -199,11 +196,11 @@ export function init() {
     document.body.addEventListener('click', () => controls.lock());
     document.body.addEventListener('keydown', ev => {
       switch(ev.keyCode) {
-        case 87: controls.moveForward(0.2); break;
+        case 87: controls.moveForward(0.2); break; // "W"
         case 65: controls.moveRight(-0.2); break;
         case 83: controls.moveForward(-0.2); break;
         case 68: controls.moveRight(0.2); break;
-        case 78: gotoRoom((context.room + 1) % rooms.length); break;
+        case 78: gotoRoom((context.room + 1) % rooms.length); break;  // N
         default: {
           var room = ev.keyCode - 48;
           if (!ev.metaKey && room >= 0 && room < rooms.length) {
@@ -273,13 +270,7 @@ export function init() {
     setupControllers();
     roomHall.setup(context);
     roomPanorama.setup(context);
-    roomPanoramaStereo.setup(context);
-    roomPhotogrammetryObject.setup(context);
-    roomVertigo.setup(context);
-    roomSound.setup(context);
-
     rooms[context.room].enter(context);
-
     slideshow.setup(context);
 
     document.body.appendChild(renderer.domElement);
@@ -394,9 +385,9 @@ function animate() {
   // render current room
   context.raycontrol.execute(context, delta, elapsedTime);
   rooms[context.room].execute(context, delta, elapsedTime);
-  if (!context.vrMode) {
-    slideshow.execute(context, delta, elapsedTime);
-  }
+  // if (!context.vrMode) {
+  //   slideshow.execute(context, delta, elapsedTime);
+  // }
 
   renderer.render(scene, camera);
   if (context.goto !== null) {

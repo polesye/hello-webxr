@@ -3,9 +3,6 @@ import * as THREE from 'three';
 var
   panoBalls = [],
   panoballsParent = new THREE.Object3D(),
-  bbox = new THREE.Box3(),
-  panoFxMaterial,
-  auxVec = new THREE.Vector3(),
   hallRef = null;
 
 const NUM_PANOBALLS = 6;
@@ -39,7 +36,7 @@ export function setup(ctx, hall) {
     ball.rotation.set(Math.PI, 0, 0);
     ball.position.copy(hall.getObjectByName(`panoball${i + 1}`).position);
     ball.userData.floatY = ball.position.y;
-    ball.userData.panoId = 4 + i;
+    ball.userData.panoId = i;
     ball.userData.selected = 0;
 
     panoBalls.push(ball);

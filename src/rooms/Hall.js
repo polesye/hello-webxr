@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import * as panoballs from '../stations/PanoBalls.js';
-import * as paintings from '../stations/Paintings.js';
-import * as newsticker from '../stations/NewsTicker.js';
-import * as xylophone from '../stations/Xylophone.js';
 import * as graffiti from '../stations/Graffiti.js';
 import * as infopanels from '../stations/InfoPanels.js';
+import * as newsticker from '../stations/NewsTicker.js';
+import * as paintings from '../stations/Paintings.js';
+import * as panoballs from '../stations/PanoBalls.js';
+import * as xylophone from '../stations/Xylophone.js';
 
 var
   scene,
@@ -58,7 +58,7 @@ export function setup(ctx) {
     'doorD': createDoorMaterial(ctx),
     'sky': new THREE.MeshBasicMaterial({map: skyTex}),
     'clouds': new THREE.MeshBasicMaterial({map: cloudsTex, transparent: true}),
-    'foxr': new THREE.MeshBasicMaterial({map: foxrTex, transparent: true}),
+    // 'foxr': new THREE.MeshBasicMaterial({map: foxrTex, transparent: true}),
     'mozillamr': new THREE.MeshBasicMaterial({map: mozillamrTex, transparent: true}),
   };
 
@@ -153,7 +153,6 @@ export function exit(ctx) {
 
   ctx.raycontrol.deactivateState('doors');
   ctx.raycontrol.deactivateState('teleport');
-
   xylophone.exit(ctx);
 }
 

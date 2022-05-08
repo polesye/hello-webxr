@@ -31,7 +31,7 @@ export default [
   },
   {
     title: 'Hello WebXR!',
-    description: 'A small compendium of interactions and little experiences introducing and celebrating the final specification of the WebXR API.\n \nMade by the Mozilla Mixed Reality team\nmixedreality.mozilla.org',
+    description: 'A small compendium of interactions and little experiences introducing and celebrating the final specification of the WebXR API.',
     offsety: 0.06
   },
   {
